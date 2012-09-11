@@ -199,7 +199,7 @@ class Jbuilder < ((defined? BasicObject) ? BasicObject : BlankSlate)
     end
   end
 
-  if RUBY_VERSION > '1.9'
+  if ::RUBY_VERSION > '1.9'
     def call(object = nil, *attributes)
       if attributes.empty?
         array!(object) { |json, element| yield json, element }
