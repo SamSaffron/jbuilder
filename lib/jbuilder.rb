@@ -4,7 +4,7 @@ require 'active_support/core_ext/array/access'
 require 'active_support/core_ext/enumerable'
 require 'active_support/json'
 require 'multi_json'
-class Jbuilder < (defined? BasicObject ? BasicObject : BlankSlate)
+class Jbuilder < ((defined? BasicObject) ? BasicObject : BlankSlate)
   class KeyFormatter
     def initialize(*args)
       @format = {}
@@ -42,9 +42,19 @@ class Jbuilder < (defined? BasicObject ? BasicObject : BlankSlate)
 
   @@key_formatter = KeyFormatter.new
 
-  define_method(:__class__, find_hidden_method(:class))
-  define_method(:_tap, find_hidden_method(:tap))
-  reveal(:respond_to?)
+
+  def __class__
+    (class << self; self; end).superclass
+  end
+
+  def _tap
+    yield self
+    self
+  end
+
+  # define_method(:__class__, find_hidden_method(:class))
+  # define_method(:_tap, find_hidden_method(:tap))
+  # reveal(:respond_to?)
 
   def initialize(key_formatter = @@key_formatter.clone)
     @attributes = ActiveSupport::OrderedHash.new
